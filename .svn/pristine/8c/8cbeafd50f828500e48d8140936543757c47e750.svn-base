@@ -1,0 +1,1083 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Tools
+</name>
+</assembly>
+<members>
+<member name="T:Tools.My.Resources.Resources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:Tools.My.Resources.Resources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:Tools.My.Resources.Resources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="M:Tools.Barcode.clsEAN13.Generate(System.String)">
+ <summary>
+ 12 Numbers to convert to EAN13
+ </summary>
+ <param name="Code">12 Numbers to convert to EAN13</param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsCrypto.#ctor(System.String)">
+ <summary>
+ Initializes the symmetric crypto provider.
+ </summary>
+ <param name="key">The key to encode and decode data with</param>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsCrypto.Decrypt(System.String)">
+ <summary>
+ Decrypts a cipher into a plain text representation
+ </summary>
+ <param name="cipher">The cipher to decrypt</param>
+ <returns>The decrypted plain text representation of the cipher entered</returns>
+</member>
+<member name="M:Tools.clsCrypto.Encrypt(System.String)">
+ <summary>
+ Encrypts plain text to cipher
+ </summary>
+ <param name="txt">The plain text to encrypt</param>
+ <returns>The encrpyted cipher representation of the plain text entered</returns>
+</member>
+<member name="M:Tools.clsCrypto.generateCode(System.String)">
+ <summary>
+ generate login code from computer data
+ </summary>
+ <param name="_coding">encryted string</param>
+ <returns>login code dez / string</returns>
+</member>
+<member name="M:Tools.MailHelper.SendMailMessage(System.String,System.String,System.String,System.String,System.String,System.String)">
+ <summary>
+ Sends an mail message
+ </summary>
+ <param name="from">Sender address</param>
+ <param name="recepient">Recepient address</param>
+ <param name="bcc">Bcc recepient</param>
+ <param name="cc">Cc recepient</param>
+ <param name="subject">Subject of mail message</param>
+ <param name="body">Body of mail message</param>
+</member>
+<member name="T:Tools.clsAppConfigFileSettings">
+ <summary>
+ AppConfigFileSettings: This class is used to Change the 
+ AppConfigs Parameters at runtime through User Interface
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsAppConfigFileSettings.UpdateAppSettings(System.String,System.String)">
+ <summary>
+ UpdateAppSettings: It will update the app.Config file AppConfig key values
+ </summary>
+ <param name="KeyName">AppConfigs KeyName</param>
+ <param name="KeyValue">AppConfigs KeyValue</param>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsAutoCombo.AutoCompleteCombo_KeyUp(System.Windows.Forms.ComboBox,System.Windows.Forms.KeyEventArgs)">
+ <summary>
+ Auto Complete Combo on Key Down
+ </summary>
+ <param name="cbo"></param>
+ <param name="e"></param>
+ <remarks>AutoCompleteCombo_KeyUp(cboName, e)</remarks>
+</member>
+<member name="M:Tools.clsAutoCombo.AutoCompleteCombo_Leave(System.Windows.Forms.ComboBox)">
+ <summary>
+ Auto Complete Combo on Leave
+ </summary>
+ <param name="cbo"></param>
+ <remarks>AutoCompleteCombo_Leave(cboName)</remarks>
+</member>
+<member name="F:Tools.clsCOMMS._log">
+ <summary>
+ A Kiwiplan Inteface file class for .NET
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsCOMMS.#ctor">
+ <summary>
+ Manual Constructor
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsCOMMS.IsNumeric(System.Object)">
+ <summary>
+ Checks a field if Numeric
+ </summary>
+ <param name="number">Pass any object</param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsCOMMS.IsChar(System.Object)">
+ <summary>
+ Checks a field if Alpha
+ </summary>
+ <param name="str">Pass any object</param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsCOMMS.BuildFile(System.Boolean)">
+ <summary>
+ Function to Build the COMMS file
+ </summary>
+ <param name="Exported">File Exported Previously True of False</param>
+ <returns>Returns the file in a string builder fasion</returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsJulianDates.#ctor">
+ <summary>
+  Manual Constructor
+ </summary>
+ <remarks>All has to be passed manually</remarks>
+</member>
+<member name="T:Tools.clsParseSQLtxtParam">
+ <summary>
+  This Class will parse the SQL text to replace parameter labels with obj code 
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsRSRGroup.#ctor">
+ <summary>
+ Manual Constructor
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:Tools.clsSettings">
+ Purpose: Replacement Class for VB GetSetting and
+ ''' SaveSetting.  Designed to replace the 
+ saving of application Settings in the registry
+ with saving in an xml file in the installation directory.
+ Allows user to set an alternate path in case of install
+ directory lockdown.  Allows user to have their own Settings
+ xml file or use one shared by all users on the same machine.
+ Allows user to have multiple "AppNames" creating multiple
+ xml files and multiple Settings (e.g., Settings, Registration, etc.)
+ Completely simulates VB GetSetting and SaveSetting by simply
+ instantiating this class and prefacing Get/SaveSetting calls with
+ the instance object name, e.g., r.GetSetting(....).
+ '''***************************************
+ Usage
+ 
+Dim r As New CSettings(True)
+CRegions.InsertRegionsInNewClass = _
+r.GetSetting(AppTitle, Settings, "IRNC", "N")
+r.SaveSetting(AppTitle, Settings, "IRNC", _
+IIf(Me.optYesInsert.Checked, "Y", "N"))
+</member>
+<member name="T:Tools.Onling.clsDatabase">
+ <summary>
+ Onling.com
+ Use and modify at will...
+ This was intended to replace all the silly functions that I had...
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="F:Tools.Onling.clsDatabase._log">
+ <summary>
+ A Database connection for .NET
+ </summary>
+ <remarks>
+ This class does not hold open a connection but 
+ instead is stateless: for each request it 
+ connects, performs the request and disconnects.
+ </remarks>
+</member>
+<member name="M:Tools.Onling.clsDatabase.#ctor">
+ <summary>
+  Manual Constructor
+ </summary>
+ <remarks>All has to be passed manually</remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.SqlHostname">
+ <summary>
+ Sql Hostname
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.SqlUsername">
+ <summary>
+ Sql Username
+ </summary>
+ <value></value>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.SqlPassword">
+ <summary>
+ Sql Password
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.SqlDBName">
+ <summary>
+ Sql DBName
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.clsDatabase.SqlConn(System.Boolean)">
+ <summary>
+ Makes a Connection to MsSql
+ </summary>
+ <param name="Trusted">True or False if you have a trusted connection</param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.MySqlHostname">
+ <summary>
+ MySql Hostname
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.MySqlUsername">
+ <summary>
+ MySql Username
+ </summary>
+ <value></value>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.MySqlPassword">
+ <summary>
+ MySql Password
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.MySqlDBName">
+ <summary>
+ MySql DBName
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.MySqlPort">
+ <summary>
+ MySql Port
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.ODBCHostname">
+ <summary>
+ ODBC Hostname
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.ODBCUsername">
+ <summary>
+ ODBC Username
+ </summary>
+ <value></value>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.ODBCPassword">
+ <summary>
+ ODBC Password
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.ODBCDBName">
+ <summary>
+ ODBC DBName
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.ODBCPort">
+ <summary>
+ ODBC Port
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.clsDatabase.ODBCDSN">
+ <summary>
+ ODBC DSN
+ </summary>
+ <value></value>
+ <returns></returns>
+ <remarks>DSN Name</remarks>
+</member>
+<member name="M:Tools.Onling.clsDatabase.ODBCConn(System.String)">
+ <summary>
+ ODBC Connection
+ </summary>
+ <param name="DBType">Database Type MySQL, TranSoft or DSN</param>
+ <returns></returns>
+ <remarks>Opens a connection via ODBC</remarks>
+</member>
+<member name="M:Tools.Onling.clsDatabase.MsSqlState">
+ <summary>
+ Gets the MsSql Connection State Opened or Closed
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.clsDatabase.MySqlState">
+ <summary>
+ Gets the MySql Connection State Opened or Closed
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.clsDatabase.OdbcState">
+ <summary>
+ Gets the Odbc Connection State Opened or Closed
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="F:Tools.Onling.clsSQLExecutes._log">
+ <summary>
+ A Sql Data Provider Class
+ </summary>
+ <remarks>This class is used to ease the commands to update the database</remarks>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.#ctor">
+ <summary>
+ Blank constructor
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteSPSQL(System.String,System.Object[])">
+ <summary>
+ To Execute a SQL based Stored Prcedure that cannot be sent via a Transaction.
+ </summary>
+ <param name="spname">The name of the stored procedure to execute at the data source.</param>
+ <param name="parameterValues">The parameter values of the stored procedure.</param>
+ <returns>0 for Success or 1 for Failure</returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteNonQuerySQL_NoTan(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Executes a Transact-SQL statement against the connection and returns the number of rows affected.
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>The number of rows affected.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteNonQuerySQL(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Executes a Transact-SQL statement against the connection and returns the number of rows affected.
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>The number of rows affected.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteNonQuerySQL(System.String,System.Int32@,System.Object[])">
+ <summary>
+ Executes a Transact-SQL statement against the connection and returns the number of rows affected.
+ </summary>
+ <param name="spname">The stored procedure to execute at the data source.</param>
+ <param name="returnValue">The returned value from stored procedure.</param>
+ <param name="parameterValues">The parameter values of the stored procedure.</param>
+ <returns>The number of rows affected.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteNonQueryODBC(System.String,System.Data.CommandType,System.Data.Odbc.OdbcParameter[])">
+ <summary>
+ Executes a Transact-SQL statement against the connection and returns the number of rows affected.
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.OdbcClient.OdbcCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>The number of rows affected.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteNonQueryODBC(System.String,System.Int32@,System.Object[])">
+ <summary>
+ Executes a Transact-SQL statement against the connection and returns the number of rows affected.
+ </summary>
+ <param name="spname">The stored procedure to execute at the data source.</param>
+ <param name="returnValue">The returned value from stored procedure.</param>
+ <param name="parameterValues">The parameter values of the stored procedure.</param>
+ <returns>The number of rows affected.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteScalarSQL(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Executes the query, and returns the first column of the first row in the result set returned by the query. Additional columns or rows are ignored.
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>The first column of the first row in the result set, or a null reference if the result set is empty.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteScalarSQL(System.String,System.Int32@,System.Object[])">
+ <summary>
+ Executes the query, and returns the first column of the first row in the result set returned by the query. Additional columns or rows are ignored.
+ </summary>
+ <param name="spname">The stored procedure to execute at the data source.</param>
+ <param name="returnValue">The returned value from stored procedure.</param>
+ <param name="parameterValues">The parameter values of the stored procedure.</param>
+ <returns>The first column of the first row in the result set, or a null reference if the result set is empty.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteReader(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection, and builds a System.Data.SqlClient.SqlDataReader using one of the System.Data.CommandBehavior values.
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>A System.Data.SqlClient.SqlDataReader object.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteReader(System.String,System.Int32@,System.Object[])">
+ <summary>
+ Sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection, and builds a System.Data.SqlClient.SqlDataReader using one of the System.Data.CommandBehavior values.
+ </summary>
+ <param name="spname">The stored procedure to execute at the data source.</param>
+ <param name="returnValue">The returned value from stored procedure.</param>
+ <param name="parameterValues">The parameter values of the stored procedure.</param>
+ <returns>A System.Data.SqlClient.SqlDataReader object.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.FillDatasetSQL(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Adds or refreshes rows in the System.Data.DataSet to match those in the data source using the System.Data.DataSet name, and creates a System.Data.DataTable named "Table."
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>A System.Data.Dataset object.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.FillDatasetODBC(System.String,System.Data.CommandType,System.Data.Odbc.OdbcParameter[])">
+ <summary>
+ Adds or refreshes rows in the System.Data.DataSet to match those in the data source using the System.Data.DataSet name, and creates a System.Data.DataTable named "Table."
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>A System.Data.Dataset object.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteDataset(System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlCommand,System.Data.DataSet,System.String)">
+ <summary>
+ Calls the respective INSERT, UPDATE, or DELETE statements for each inserted, updated, or deleted row in the System.Data.DataSet with the specified System.Data.DataTable name.
+ </summary>
+ <param name="insertCmd">A command used to insert new records into the data source.</param>
+ <param name="updateCmd">A command used to update records in the data source.</param>
+ <param name="deleteCmd">A command for deleting records from the data set.</param>
+ <param name="ds">The System.Data.DataSet to use to update the data source. </param>
+ <param name="srcTable">The name of the source table to use for table mapping.</param>
+ <returns>The number of rows successfully updated from the System.Data.DataSet.</returns>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteScriptSQL(System.String,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Executes a SQL query file against the connection.
+ </summary>
+ <param name="filename">SQL query file name.</param>
+ <param name="parameters">The parameters of the SQL query file.</param>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ExecuteScriptODBC(System.String,System.Data.Odbc.OdbcParameter[])">
+ <summary>
+ Executes a SQL query file against the connection.
+ </summary>
+ <param name="filename">SQL query file name.</param>
+ <param name="parameters">The parameters of the SQL query file.</param>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ReadsScriptSQL(System.String,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Reads a SQL query file
+ </summary>
+ <param name="filename">SQL query file name.</param>
+ <param name="parameters">The parameters of the SQL query file.</param>
+</member>
+<member name="M:Tools.Onling.clsSQLExecutes.ReadScriptODBC(System.String,System.Data.Odbc.OdbcParameter[])">
+ <summary>
+ Reads a SQL query from a file
+ </summary>
+ <param name="filename">SQL query file name.</param>
+ <param name="parameters">The parameters of the SQL query file.</param>
+</member>
+<member name="M:Tools.Onling.SqlDatabaseException.#ctor">
+ <summary>
+ Initializes a new instance of the ADO.SqlDatabaseException class.
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.SqlDatabaseException.#ctor(System.String)">
+ <summary>
+ Initializes a new instance of the ADO.SqlDatabaseException class with a specified error message.
+ </summary>
+ <param name="message">The message that describes the error.</param>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.SqlDatabaseException.#ctor(System.String,System.Exception)">
+ <summary>
+ Initializes a new instance of the ADO.SqlDatabaseException class with a specified error message 
+ and a reference to the inner exception that is the cause of this exception.
+ </summary>
+ <param name="message">The error message that explains the reason for the exception.</param>
+ <param name="innerException">The exception that is the cause of the current exception, or a null reference 
+ (Nothing in Visual Basic) if no inner exception is specified.</param>
+ <remarks></remarks>
+</member>
+<member name="T:Tools.Onling.FTPclient">
+ <summary>
+ A wrapper class for .NET 2.0 FTP
+ </summary>
+ <remarks>
+ This class does not hold open an FTP connection but 
+ instead is stateless: for each FTP request it 
+ connects, performs the request and disconnects.
+ </remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.#ctor">
+ <summary>
+ Blank constructor
+ </summary>
+ <remarks>Hostname, username and password must be set manually</remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.#ctor(System.String)">
+ <summary>
+ Constructor just taking the hostname
+ </summary>
+ <param name="Hostname">in either ftp://ftp.host.com or ftp.host.com form</param>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.#ctor(System.String,System.String,System.String)">
+ <summary>
+ Constructor taking hostname, username and password
+ </summary>
+ <param name="Hostname">in either ftp://ftp.host.com or ftp.host.com form</param>
+ <param name="Username">Leave blank to use 'anonymous' but set password to your email</param>
+ <param name="Password"></param>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.ListDirectory(System.String)">
+ <summary>
+ Return a simple directory listing
+ </summary>
+ <param name="directory">Directory to list, e.g. /pub</param>
+ <returns>A list of filenames and directories as a List(of String)</returns>
+ <remarks>For a detailed directory listing, use ListDirectoryDetail</remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.ListDirectoryDetail(System.String)">
+ <summary>
+ Return a detailed directory listing
+ </summary>
+ <param name="directory">Directory to list, e.g. /pub/etc</param>
+ <returns>An FTPDirectory object</returns>
+</member>
+<member name="M:Tools.Onling.FTPclient.Upload(System.String,System.String)">
+ <summary>
+ Copy a local file to the FTP server
+ </summary>
+ <param name="localFilename">Full path of the local file</param>
+ <param name="targetFilename">Target filename, if required</param>
+ <returns></returns>
+ <remarks>If the target filename is blank, the source filename is used
+ (assumes current directory). Otherwise use a filename to specify a name
+ or a full path and filename if required.</remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.Upload(System.IO.FileInfo,System.String)">
+ <summary>
+ Upload a local file to the FTP server
+ </summary>
+ <param name="fi">Source file</param>
+ <param name="targetFilename">Target filename (optional)</param>
+ <returns></returns>
+</member>
+<member name="M:Tools.Onling.FTPclient.Download(System.String,System.String,System.Boolean)">
+ <summary>
+ Copy a file from FTP server to local
+ </summary>
+ <param name="sourceFilename">Target filename, if required</param>
+ <param name="localFilename">Full path of the local file</param>
+ <returns></returns>
+ <remarks>Target can be blank (use same filename), or just a filename
+ (assumes current directory) or a full path and filename</remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.FtpDelete(System.String)">
+ <summary>
+ Delete remote file
+ </summary>
+ <param name="filename">filename or full path</param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.FtpFileExists(System.String)">
+ <summary>
+ Determine if file exists on remote FTP site
+ </summary>
+ <param name="filename">Filename (for current dir) or full path</param>
+ <returns></returns>
+ <remarks>Note this only works for files</remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.GetFileSize(System.String)">
+ <summary>
+ Determine size of remote file
+ </summary>
+ <param name="filename"></param>
+ <returns></returns>
+ <remarks>Throws an exception if file does not exist</remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.GetCredentials">
+ <summary>
+ Get the credentials from username/password
+ </summary>
+</member>
+<member name="M:Tools.Onling.FTPclient.GetFullPath(System.String)">
+ <summary>
+ returns a full path using CurrentDirectory for a relative file reference
+ </summary>
+</member>
+<member name="M:Tools.Onling.FTPclient.AdjustDir(System.String)">
+ <summary>
+ Amend an FTP path so that it always starts with /
+ </summary>
+ <param name="path">Path to adjust</param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.GetStringResponse(System.Net.FtpWebRequest)">
+ <summary>
+ Obtains a response stream as a string
+ </summary>
+ <param name="ftp">current FTP request</param>
+ <returns>String containing response</returns>
+ <remarks>FTP servers typically return strings with CR and
+ not CRLF. Use respons.Replace(vbCR, vbCRLF) to convert
+ to an MSDOS string</remarks>
+</member>
+<member name="M:Tools.Onling.FTPclient.GetSize(System.Net.FtpWebRequest)">
+ <summary>
+ Gets the size of an FTP request
+ </summary>
+ <param name="ftp"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="P:Tools.Onling.FTPclient.Hostname">
+ <summary>
+ Hostname
+ </summary>
+ <value></value>
+ <remarks>Hostname can be in either the full URL format
+ ftp://ftp.myhost.com or just ftp.myhost.com
+ </remarks>
+</member>
+<member name="P:Tools.Onling.FTPclient.Username">
+ <summary>
+ Username property
+ </summary>
+ <value></value>
+ <remarks>Can be left blank, in which case 'anonymous' is returned</remarks>
+</member>
+<member name="F:Tools.Onling.FTPclient._currentDirectory">
+ <summary>
+ The CurrentDirectory value
+ </summary>
+ <remarks>Defaults to the root '/'</remarks>
+</member>
+<member name="T:Tools.Onling.FTPfileInfo">
+ <summary>
+ Represents a file or directory entry from an FTP listing
+ </summary>
+ <remarks>
+ This class is used to parse the results from a detailed
+ directory list from FTP. It supports most formats of
+ </remarks>
+</member>
+<member name="T:Tools.Onling.FTPfileInfo.DirectoryEntryTypes">
+ <summary>
+ Identifies entry as either File or Directory
+ </summary>
+</member>
+<member name="M:Tools.Onling.FTPfileInfo.#ctor(System.String,System.String)">
+ <summary>
+ Constructor taking a directory listing line and path
+ </summary>
+ <param name="line">The line returned from the detailed directory list</param>
+ <param name="path">Path of the directory</param>
+ <remarks></remarks>
+</member>
+<member name="F:Tools.Onling.FTPfileInfo._ParseFormats">
+ <summary>
+ List of REGEX formats for different FTP server listing formats
+ </summary>
+ <remarks>
+ The first three are various UNIX/LINUX formats, fourth is for MS FTP
+ in detailed mode and the last for MS FTP in 'DOS' mode.
+ I wish VB.NET had support for Const arrays like C# but there you go
+ </remarks>
+</member>
+<member name="T:Tools.Onling.FTPdirectory">
+ <summary>
+ Stores a list of files and directories from an FTP result
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.FTPdirectory.#ctor(System.String,System.String)">
+ <summary>
+ Constructor: create list from a (detailed) directory string
+ </summary>
+ <param name="dir">directory listing string</param>
+ <param name="path"></param>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.Onling.FTPdirectory.GetFiles(System.String)">
+ <summary>
+ Filter out only files from directory listing
+ </summary>
+ <param name="ext">optional file extension filter</param>
+ <returns>FTPdirectory listing</returns>
+</member>
+<member name="M:Tools.Onling.FTPdirectory.GetDirectories">
+ <summary>
+ Returns a list of only subdirectories
+ </summary>
+ <returns>FTPDirectory list</returns>
+ <remarks></remarks>
+</member>
+<member name="F:Tools.clsFunctions._log">
+ <summary>
+ A Database connection for .NET
+ </summary>
+ <remarks>
+ This class does not hold open a connection but 
+ instead is stateless: for each request it 
+ connects, performs the request and disconnects.
+ </remarks>
+</member>
+<member name="M:Tools.clsFunctions.Fax(System.String@,System.String@,System.String@,System.String@,System.String@)">
+ <summary>
+ Sending a Fax out
+ </summary>
+ <param name="faxsrvname">Fax Server HostName or IP</param>
+ <param name="PathandDoc">Path and Document Name to send</param>
+ <param name="PhoneNum">Contact Fax Number</param>
+ <param name="Contact">Contact Name</param>
+ <param name="Email">Contact Email</param>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsFunctions.To16ths(System.Object)">
+ <summary>
+ Converts Sixteenths stored to inches
+ </summary>
+ <param name="Value">Integer in as 16ths</param>
+ <returns>A String representing "inches.16ths" formatted to 2 decimal places</returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsFunctions.To16ths(System.Double)">
+ <summary>
+ Converts inches to Sixteenths
+ </summary>
+ <param name="measurement">in 16ths as Integer</param>
+ <returns>A String representing "inches.16ths" formatted to 2 decimal places</returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsFunctions.EncryptDecryptString(System.Object)">
+ <summary>
+ Encrypt a String
+ </summary>
+ <param name="cryptStr">String to/from Encryption</param>
+ <returns>Encrypted or Decrypted Value</returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsFunctions.IsNumeric(System.Object)">
+ <summary>
+ Value Numeric Check
+ </summary>
+ <param name="Number">Number Value</param>
+ <returns>If the Value is a Number</returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsFunctions.IsChar(System.String)">
+ <summary>
+ Value String Check
+ </summary>
+ <param name="Text">Value in Text</param>
+ <returns>If the Value is Text</returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsFunctions.ColLetter(System.Int64)">
+ <summary>
+ Column number to letter
+ </summary>
+ <param name="colnum"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.CreateDir(System.String@)">
+ <summary>
+ Create Directory
+ </summary>
+ <param name="Path"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.NetEmail(System.String@,System.String@,System.String@,System.String@,System.String@,System.Int32@)">
+ <summary>
+ Send a email
+ </summary>
+ <param name="FromEmail"></param>
+ <param name="ToEmail"></param>
+ <param name="Subject"></param>
+ <param name="FileName"></param>
+ <param name="SMTPServer"></param>
+ <param name="SMTPPort"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.CheckIfExistInCombo(System.Object,System.String)">
+ <summary>
+ Verify text in a combo box
+ </summary>
+ <param name="objCombo"></param>
+ <param name="TextToFind"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.RowLoop(System.Windows.Forms.DataGridView)">
+ <summary>
+ Loop through rows in a datagridview
+ </summary>
+ <param name="datagrd">DataGridView Object</param>
+ <returns>Message Box in text of each cell value</returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsFunctions.GetSelectedRowsDGV(System.Windows.Forms.DataGridView)">
+ <summary>
+ Get a selected row from a DataGridView
+ </summary>
+ <param name="dataGridView"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.GetSelected_RowInDataTable(System.Int32,System.Windows.Forms.DataGridView)">
+ <summary>
+ Get a specific row in a DataGridview by index
+ </summary>
+ <param name="intSelectedIndex"></param>
+ <param name="dgv"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.GetSelectedRowsInDataGridView(System.Windows.Forms.DataGridView)">
+ <summary>
+ Loop through a DataGridView and return the Selected Rows
+ </summary>
+ <param name="dgv">DataGridView Object</param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:Tools.clsFunctions.GetFileContents(System.String,System.String@)">
+ <summary>
+ Get/Read file content
+ </summary>
+ <param name="FullPath"></param>
+ <param name="ErrInfo"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.SaveTextToFile(System.String,System.String,System.String)">
+ <summary>
+ Save data to a file
+ </summary>
+ <param name="strData"></param>
+ <param name="FullPath"></param>
+ <param name="ErrInfo"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.PingHost(System.String)">
+ <summary>
+ Ping Server
+ </summary>
+ <param name="nameOrAddress"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.AutosizeImage(System.String,System.Windows.Forms.PictureBox,System.Windows.Forms.PictureBoxSizeMode)">
+ <summary>
+ AutoSize and center and image in a picture box
+ </summary>
+ <param name="ImagePath"></param>
+ <param name="picBox"></param>
+ <param name="pSizeMode"></param>
+</member>
+<member name="M:Tools.clsFunctions.ScaleImage(System.Drawing.Image,System.Int32,System.Int32)">
+ <summary>
+ Scale and Imaage to a certain size
+ </summary>
+ <param name="OldImage"></param>
+ <param name="TargetHeight"></param>
+ <param name="TargetWidth"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.csvToDatatable(System.String,System.Char)">
+ <summary>
+ Covert and CSV file with Headers to a datatable
+ </summary>
+ <param name="strfilename"></param>
+ <param name="delimeter"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.DataGridViewTocsv(System.Windows.Forms.DataGridView@,System.String@,System.Char@)">
+ <summary>
+ Export DatagridView Data to a CSV
+ </summary>
+ <param name="datagridview"></param>
+ <param name="strfilename"></param>
+ <param name="delimeter"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.getNumericValueInAlphabet(System.String)">
+ <summary>
+ Convert Alphabet to Numbers
+ </summary>
+ <param name="value"></param>
+ <returns></returns>
+</member>
+<member name="M:Tools.clsFunctions.UnicodeBytesToString(System.Byte[])">
+ <summary>
+ This is to convert data columns from image to string
+ </summary>
+ <param name="bytes"></param>
+ <returns></returns>
+ https://www.experts-exchange.com/questions/28693849/VB-net-DataGridView-Error.html
+</member>
+<member name="M:Tools.clsFunctions.GetNumbersFromString(System.String)">
+ <summary>
+ Get the numbers only from a string
+ </summary>
+ <param name="ValueSrting"></param>
+ <returns></returns>
+</member>
+<member name="T:Tools.SqlDataProvider.SqlDatabase">
+ <summary>
+ This class provides a fast and universal method for accessing SQL Server database.This class cannot be inherited.
+ </summary>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.#ctor(System.String)">
+ <summary>
+ Initializes a new instance of the ADO.SqlDatabase class.
+ </summary>
+ <param name="connectionString">The connection used to open the SQL Server database.</param>
+</member>
+<member name="P:Tools.SqlDataProvider.SqlDatabase.ConnectionString">
+ <summary>
+ Gets or sets the string used to open a SQL Server database.
+ </summary>
+ <returns>The connection string that includes the source database name, and other parameters needed to establish the initial connection.</returns>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.ExecuteNonQuery(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Executes a Transact-SQL statement against the connection and returns the number of rows affected.
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>The number of rows affected.</returns>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.ExecuteNonQuery(System.String,System.Int32@,System.Object[])">
+ <summary>
+ Executes a Transact-SQL statement against the connection and returns the number of rows affected.
+ </summary>
+ <param name="spname">The stored procedure to execute at the data source.</param>
+ <param name="returnValue">The returned value from stored procedure.</param>
+ <param name="parameterValues">The parameter values of the stored procedure.</param>
+ <returns>The number of rows affected.</returns>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.ExecuteScalar(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Executes the query, and returns the first column of the first row in the result set returned by the query. Additional columns or rows are ignored.
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>The first column of the first row in the result set, or a null reference if the result set is empty.</returns>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.ExecuteScalar(System.String,System.Int32@,System.Object[])">
+ <summary>
+ Executes the query, and returns the first column of the first row in the result set returned by the query. Additional columns or rows are ignored.
+ </summary>
+ <param name="spname">The stored procedure to execute at the data source.</param>
+ <param name="returnValue">The returned value from stored procedure.</param>
+ <param name="parameterValues">The parameter values of the stored procedure.</param>
+ <returns>The first column of the first row in the result set, or a null reference if the result set is empty.</returns>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.ExecuteReader(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection, and builds a System.Data.SqlClient.SqlDataReader using one of the System.Data.CommandBehavior values.
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>A System.Data.SqlClient.SqlDataReader object.</returns>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.ExecuteReader(System.String,System.Int32@,System.Object[])">
+ <summary>
+ Sends the System.Data.SqlClient.SqlCommand.CommandText to the System.Data.SqlClient.SqlCommand.Connection, and builds a System.Data.SqlClient.SqlDataReader using one of the System.Data.CommandBehavior values.
+ </summary>
+ <param name="spname">The stored procedure to execute at the data source.</param>
+ <param name="returnValue">The returned value from stored procedure.</param>
+ <param name="parameterValues">The parameter values of the stored procedure.</param>
+ <returns>A System.Data.SqlClient.SqlDataReader object.</returns>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.FillDataset(System.String,System.Data.CommandType,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Adds or refreshes rows in the System.Data.DataSet to match those in the data source using the System.Data.DataSet name, and creates a System.Data.DataTable named "Table."
+ </summary>
+ <param name="cmd">The Transact-SQL statement or stored procedure to execute at the data source.</param>
+ <param name="cmdType">A value indicating how the System.Data.SqlClient.SqlCommand.CommandText property is to be interpreted.</param>
+ <param name="parameters">The parameters of the Transact-SQL statement or stored procedure.</param>
+ <returns>A System.Data.Dataset object.</returns>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.ExecuteDataset(System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlCommand,System.Data.DataSet,System.String)">
+ <summary>
+ Calls the respective INSERT, UPDATE, or DELETE statements for each inserted, updated, or deleted row in the System.Data.DataSet with the specified System.Data.DataTable name.
+ </summary>
+ <param name="insertCmd">A command used to insert new records into the data source.</param>
+ <param name="updateCmd">A command used to update records in the data source.</param>
+ <param name="deleteCmd">A command for deleting records from the data set.</param>
+ <param name="ds">The System.Data.DataSet to use to update the data source. </param>
+ <param name="srcTable">The name of the source table to use for table mapping.</param>
+ <returns>The number of rows successfully updated from the System.Data.DataSet.</returns>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabase.ExecuteScript(System.String,System.Data.SqlClient.SqlParameter[])">
+ <summary>
+ Executes a SQL query file against the connection.
+ </summary>
+ <param name="filename">SQL query file name.</param>
+ <param name="parameters">The parameters of the SQL query file.</param>
+</member>
+<member name="T:Tools.SqlDataProvider.SqlDatabaseException">
+ <summary>
+ Represents errors that occur during application execution.
+ </summary>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabaseException.#ctor">
+ <summary>
+ Initializes a new instance of the ADO.SqlDatabaseException class.
+ </summary>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabaseException.#ctor(System.String)">
+ <summary>
+ Initializes a new instance of the ADO.SqlDatabaseException class with a specified error message.
+ </summary>
+ <param name="message">The message that describes the error.</param>
+</member>
+<member name="M:Tools.SqlDataProvider.SqlDatabaseException.#ctor(System.String,System.Exception)">
+ <summary>
+ Initializes a new instance of the ADO.SqlDatabaseException class with a specified error message and a reference to the inner exception that is the cause of this exception.
+ </summary>
+ <param name="message">The error message that explains the reason for the exception.</param>
+ <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
+</member>
+</members>
+</doc>

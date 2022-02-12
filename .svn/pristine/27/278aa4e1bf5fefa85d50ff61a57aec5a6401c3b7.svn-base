@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="Tools">
+</Property><Property Name="Solution File" Value="C:\Users\steve.ling\Documents\Visual Studio 2008\Projects\Tools\Tools.sln">
+</Property><Property Name="Date" Value="Wednesday, December 17, 2008">
+</Property><Property Name="Time" Value="22:06 PM">
+</Property></Properties><Event ErrorLevel="0" Project="Tools" Source="Tools.vbproj" Description="The project file does not require conversion.">
+</Event><Event ErrorLevel="3" Project="Tools" Source="Tools.vbproj" Description="No Conversion Required">
+</Event><Event ErrorLevel="0" Project="" Source="Tools.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="Tools.sln" Description="Converted">
+</Event></UpgradeLog>
