@@ -156,7 +156,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region "Encryption String"
+#Region " Encryption String "
     ''' <summary>
     ''' Encrypt a String
     ''' </summary>
@@ -184,7 +184,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region "Check if Numberic"
+#Region " Check if Numberic "
     ''' <summary>
     ''' Value Numeric Check
     ''' </summary>
@@ -206,7 +206,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region "Check if Alpha Only"
+#Region " Check if Alpha Only "
     ''' <summary>
     ''' Value String Check
     ''' </summary>
@@ -290,7 +290,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region "Convert Numbers to Letter"
+#Region " Convert Numbers to Letter "
     'Author: Alan L. Lesmerises
     'From: http://www.freevbcode.com/ShowCode.asp?ID=4303
 
@@ -316,7 +316,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region "Convert Multi-Letters to Numbers"
+#Region " Convert Multi-Letters to Numbers "
     Function MultiLetter(ByVal InputNumber) As String
         Dim CumSum As Object, InputValue As Object
         Dim StringPosition As Integer
@@ -355,7 +355,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region "Column to Letter"
+#Region " Column to Letter "
     ''' <summary>
     ''' Column number to letter
     ''' </summary>
