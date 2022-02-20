@@ -1,18 +1,15 @@
-Imports System.Math
-Imports log4net
-Imports log4net.Config
-Imports System.Configuration
-Imports System.Reflection
-Imports System.IO
-Imports Quiksoft.FreeSMTP
-Imports System.Windows.Forms
-Imports System.Net.NetworkInformation
-Imports System.Drawing
-Imports System.Text
-Imports System.Runtime.InteropServices
 Imports System.ComponentModel
-Imports System.Net
+Imports System.Drawing
 Imports System.Globalization
+Imports System.IO
+Imports System.Math
+Imports System.Net
+Imports System.Net.NetworkInformation
+Imports System.Reflection
+Imports System.Runtime.InteropServices
+Imports System.Text
+Imports System.Windows.Forms
+Imports log4net
 
 Public Class clsFunctions
     ''' <summary>
@@ -1554,73 +1551,6 @@ Err_MultiLetter:
     End Sub
 #End Region
 
-    '#Region " Change Controls to True or False "
-    '    Public Sub ControlsTrueFalse(ByVal Status As Boolean)
-    '        Try
-
-    '            'Load blank defaults
-    '            Dim a As Control
-    '            For Each a In Me.Controls
-    '                _log.Info("Changing control " & a.GetType.Name & "to the status of " & Status)
-    '                If TypeOf a Is TextBox Then
-    '                    a.Enabled = Status
-    '                End If
-    '                If TypeOf a Is ComboBox Then
-    '                    a.Enabled = Status
-    '                End If
-    '                If TypeOf a Is DateTimePicker Then
-    '                    a.Enabled = Status
-    '                End If
-    '                If TypeOf a Is CheckBox Then
-    '                    a.Enabled = Status
-    '                End If
-    '                If TypeOf a Is GroupBox Then
-    '                    a.Enabled = Status
-    '                End If
-    '                If TypeOf a Is Button Then
-    '                    a.Enabled = Status
-    '                End If
-    '            Next
-    '            For Each GroupBoxCntrol As Control In Me.Controls
-    '                If TypeOf GroupBoxCntrol Is GroupBox Then
-    '                    _log.Info("Changing control to " & Status & " in a groupbox except of name of group box is Searches")
-    '                    If GroupBoxCntrol.Name <> "Searches" Then
-    '                        For Each cntrl As Control In GroupBoxCntrol.Controls
-    '                            _log.Info("Changing control " & cntrl.GetType.Name & "to the status of " & Status)
-    '                            If TypeOf cntrl Is TextBox Then
-    '                                cntrl.Enabled = Status
-    '                            End If
-    '                            If TypeOf cntrl Is ComboBox Then
-    '                                cntrl.Enabled = Status
-    '                            End If
-    '                            If TypeOf cntrl Is DateTimePicker Then
-    '                                cntrl.Enabled = Status
-    '                            End If
-    '                            If TypeOf cntrl Is CheckBox Then
-    '                                cntrl.Enabled = Status
-    '                            End If
-    '                            If TypeOf cntrl Is GroupBox Then
-    '                                cntrl.Enabled = Status
-    '                            End If
-    '                            If TypeOf cntrl Is Button Then
-    '                                cntrl.Enabled = Status
-    '                            End If
-    '                        Next
-    '                        GroupBoxCntrol.Enabled = Status
-    '                    End If
-    '                End If
-
-    '            Next
-
-    '        Catch ex As Exception
-    '            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
-    '            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
-    '        Finally
-
-    '        End Try
-    '    End Sub
-    '#End Region
-
 #Region " Simple FTP Upload File"
     ''' <summary>
     ''' Simple Upload file subroutine
@@ -1691,6 +1621,57 @@ Err_MultiLetter:
         End Try
 
         MessageBox.Show("Process Complete")
+
+    End Sub
+#End Region
+
+#Region " Auto Resize Image "
+    Public Shared Sub AutosizeImage(ByVal ImagePath As String, ByVal picBox As PictureBox, Optional ByVal pSizeMode As PictureBoxSizeMode = PictureBoxSizeMode.CenterImage)
+        Try
+            picBox.Image = Nothing
+            picBox.SizeMode = pSizeMode
+            If System.IO.File.Exists(ImagePath) Then
+                Dim imgOrg As Bitmap
+                Dim imgShow As Bitmap
+                Dim g As Graphics
+                Dim divideBy, divideByH, divideByW As Double
+                imgOrg = DirectCast(Bitmap.FromFile(ImagePath), Bitmap)
+
+                divideByW = imgOrg.Width / picBox.Width
+                divideByH = imgOrg.Height / picBox.Height
+                If divideByW > 1 Or divideByH > 1 Then
+                    If divideByW > divideByH Then
+                        divideBy = divideByW
+                    Else
+                        divideBy = divideByH
+                    End If
+
+                    imgShow = New Bitmap(CInt(CDbl(imgOrg.Width) / divideBy), CInt(CDbl(imgOrg.Height) / divideBy))
+                    imgShow.SetResolution(imgOrg.HorizontalResolution, imgOrg.VerticalResolution)
+                    g = Graphics.FromImage(imgShow)
+                    g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+                    g.DrawImage(imgOrg, New Rectangle(0, 0, CInt(CDbl(imgOrg.Width) / divideBy), CInt(CDbl(imgOrg.Height) / divideBy)), 0, 0, imgOrg.Width, imgOrg.Height, GraphicsUnit.Pixel)
+                    g.Dispose()
+                Else
+                    imgShow = New Bitmap(imgOrg.Width, imgOrg.Height)
+                    imgShow.SetResolution(imgOrg.HorizontalResolution, imgOrg.VerticalResolution)
+                    g = Graphics.FromImage(imgShow)
+                    g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+                    g.DrawImage(imgOrg, New Rectangle(0, 0, imgOrg.Width, imgOrg.Height), 0, 0, imgOrg.Width, imgOrg.Height, GraphicsUnit.Pixel)
+                    g.Dispose()
+                End If
+                imgOrg.Dispose()
+
+                picBox.Image = imgShow
+            Else
+                picBox.Image = Nothing
+            End If
+
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
 
     End Sub
 #End Region
