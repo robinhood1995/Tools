@@ -735,7 +735,7 @@ Err_MultiLetter:
 
 #End Region
 
-#Region " Image Resixe and Center "
+#Region " Image Resize and Center "
     ''' <summary>
     ''' AutoSize and center and image in a picture box
     ''' </summary>
@@ -1621,57 +1621,6 @@ Err_MultiLetter:
         End Try
 
         MessageBox.Show("Process Complete")
-
-    End Sub
-#End Region
-
-#Region " Auto Resize Image "
-    Public Shared Sub AutosizeImage(ByVal ImagePath As String, ByVal picBox As PictureBox, Optional ByVal pSizeMode As PictureBoxSizeMode = PictureBoxSizeMode.CenterImage)
-        Try
-            picBox.Image = Nothing
-            picBox.SizeMode = pSizeMode
-            If System.IO.File.Exists(ImagePath) Then
-                Dim imgOrg As Bitmap
-                Dim imgShow As Bitmap
-                Dim g As Graphics
-                Dim divideBy, divideByH, divideByW As Double
-                imgOrg = DirectCast(Bitmap.FromFile(ImagePath), Bitmap)
-
-                divideByW = imgOrg.Width / picBox.Width
-                divideByH = imgOrg.Height / picBox.Height
-                If divideByW > 1 Or divideByH > 1 Then
-                    If divideByW > divideByH Then
-                        divideBy = divideByW
-                    Else
-                        divideBy = divideByH
-                    End If
-
-                    imgShow = New Bitmap(CInt(CDbl(imgOrg.Width) / divideBy), CInt(CDbl(imgOrg.Height) / divideBy))
-                    imgShow.SetResolution(imgOrg.HorizontalResolution, imgOrg.VerticalResolution)
-                    g = Graphics.FromImage(imgShow)
-                    g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
-                    g.DrawImage(imgOrg, New Rectangle(0, 0, CInt(CDbl(imgOrg.Width) / divideBy), CInt(CDbl(imgOrg.Height) / divideBy)), 0, 0, imgOrg.Width, imgOrg.Height, GraphicsUnit.Pixel)
-                    g.Dispose()
-                Else
-                    imgShow = New Bitmap(imgOrg.Width, imgOrg.Height)
-                    imgShow.SetResolution(imgOrg.HorizontalResolution, imgOrg.VerticalResolution)
-                    g = Graphics.FromImage(imgShow)
-                    g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
-                    g.DrawImage(imgOrg, New Rectangle(0, 0, imgOrg.Width, imgOrg.Height), 0, 0, imgOrg.Width, imgOrg.Height, GraphicsUnit.Pixel)
-                    g.Dispose()
-                End If
-                imgOrg.Dispose()
-
-                picBox.Image = imgShow
-            Else
-                picBox.Image = Nothing
-            End If
-
-
-        Catch ex As Exception
-            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
-            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
 
     End Sub
 #End Region

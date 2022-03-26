@@ -17,7 +17,7 @@
     </UpgradeBackupLocation>
     <SignAssembly>false</SignAssembly>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <PublishUrl>http://localhost/Tools/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -121,7 +121,10 @@
     <Compile Include="clsFTP.vb" />
     <Compile Include="clsFTPNotUsed.vb" />
     <Compile Include="clsFunctions.vb" />
+    <None Include=".github\FUNDING.yml" />
+    <None Include=".github\ISSUE_TEMPLATE.md" />
     <None Include="app.config" />
+    <None Include="Changes.md" />
     <None Include="clsOutput.vb" />
     <None Include="clsXML.vb" />
     <Compile Include="clsProcessBarThreading.vb" />
@@ -149,7 +152,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="License.md" />
     <None Include="packages.config" />
+    <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

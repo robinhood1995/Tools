@@ -1,0 +1,1 @@
+﻿This is an acumulations of functions and class that I have used in projects throughout my years of coding.
