@@ -1,7 +1,9 @@
 Imports System.ComponentModel
+Imports System.Configuration
 Imports System.Drawing
 Imports System.Globalization
 Imports System.IO
+Imports System.Linq
 Imports System.Math
 Imports System.Net
 Imports System.Net.NetworkInformation
@@ -10,6 +12,10 @@ Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Windows.Forms
 Imports log4net
+Imports Microsoft.Win32
+Imports System.ServiceProcess
+Imports System.Data.SqlClient
+Imports MySql.Data.MySqlClient
 
 Public Class clsFunctions
     ''' <summary>
@@ -29,6 +35,740 @@ Public Class clsFunctions
     Private Sub New()
         _log.Info("Starting Tools DLL" & MethodBase.GetCurrentMethod().ToString())
     End Sub
+
+#Region " GetConnectionStringByName "
+    ' Retrieves a connection string by name.
+    ' Returns Nothing if the name is not found.
+    Public Shared Function GetConnectionStringByName(ByVal name As String) As String
+
+        ' Assume failure
+        Dim returnValue As String = Nothing
+
+        ' Look for the name in the connectionStrings section.
+        Dim settings As ConnectionStringSettings = ConfigurationManager.ConnectionStrings(name)
+
+        ' If found, return the connection string.
+        If Not settings Is Nothing Then
+            returnValue = settings.ConnectionString
+        End If
+
+        Return returnValue
+    End Function
+#End Region
+
+#Region " GetConnectionStringByProvidor "
+    ' Retrieve a connection string by specifying the providerName.
+    ' Assumes one connection string per provider in the config file.
+    Public Shared Function GetConnectionStringByProvider(ByVal providerName As String) As String
+
+        'Return Nothing on failure.
+        Dim returnValue As String = Nothing
+
+        ' Get the collection of connection strings.
+        Dim settings As ConnectionStringSettingsCollection =
+        ConfigurationManager.ConnectionStrings
+
+        ' Walk through the collection and return the first 
+        ' connection string matching the providerName.
+        If Not settings Is Nothing Then
+            For Each cs As ConnectionStringSettings In settings
+                If cs.ProviderName = providerName Then
+                    returnValue = cs.ConnectionString
+                    Exit For
+                End If
+            Next
+        End If
+
+        Return returnValue
+    End Function
+#End Region
+
+#Region " Check for any MsSQL "
+    Public Shared Function checkMsSQLAnyInstalled(ByVal conn As String) As Tuple(Of String)
+        Try
+            'https://stackoverflow.com/questions/36625641/how-to-verify-if-sql-express-2014-is-installed-and-which-instance
+
+            Dim strMsSQLType As String
+            Using key As RegistryKey = Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Microsoft SQL Server\\", False)
+                If key Is Nothing Then Return New Tuple(Of String)("REMOTESQLEXPRESS")
+
+                Dim strNames() As String
+                strNames = key.GetSubKeyNames
+
+                Dim strKey As String
+                For Each strKey In strNames
+                    _log.Info("Key Names: " & strKey.ToString)
+                Next
+
+                'If we cannot find a SQL server registry key, we don't have SQL Server Express installed
+                If strNames.Contains("SQLEXPRESS").ToString.ToUpper Then
+                    strMsSQLType = "SQLEXPRESS"
+                    _log.Info("Name contains " & strMsSQLType)
+                    Return New Tuple(Of String)("LOCALSQLEXPRESS")
+
+                ElseIf strNames.Contains("MSSQLServer").ToString.ToUpper Then
+                    strMsSQLType = "MSSQLServer"
+                    _log.Info("Name contains " & strMsSQLType)
+                    Return New Tuple(Of String)("LOCALMSSQLServer")
+
+                ElseIf Not conn.Contains("SQLEXPRESS") Then
+                    _log.Info("Connection String does not contain SQLExpress")
+                    Return New Tuple(Of String)("REMOTESQLEXPRESS")
+
+                Else
+                    strMsSQLType = "NoSQL"
+                    _log.Info("Name containes " & strMsSQLType)
+                    Return New Tuple(Of String)("NoLocalSQL")
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+
+        End Try
+    End Function
+#End Region
+
+#Region " Check MsSQL Express Service Exists "
+    Public Shared Function checkMsSQLExpressService(ByVal strMsSQLType As String) As Boolean
+        Try
+            If strMsSQLType = "LOCALMSSQLServer" Then
+                _log.Info("This is not a express server moving to SQL Server")
+                Return False
+            End If
+
+            Dim myServiceName As String = "MSSQL$SQLEXPRESS" 'service name of SQL Server Express
+            Dim status As String  'service status (For example, Running or Stopped)
+            Dim mySC As ServiceController
+
+            _log.Info("Service: " & myServiceName)
+
+            'display service status: For example, Running, Stopped, or Paused
+            mySC = New ServiceController(myServiceName)
+            Try
+                status = mySC.Status.ToString
+            Catch ex As Exception
+                _log.Info("Service not found. It is probably not installed. [exception=" & ex.Message & "]")
+            End Try
+            _log.Info("Service status : " & status)
+
+            'if service is Stopped or StopPending, you can run it with the following code.
+            If mySC.Status.Equals(ServiceControllerStatus.Stopped) Or mySC.Status.Equals(ServiceControllerStatus.StopPending) Then
+                Try
+                    _log.Info("Starting the service...")
+                    mySC.Start()
+                    mySC.WaitForStatus(ServiceControllerStatus.Running)
+                    _log.Info("The service is now " & mySC.Status.ToString)
+
+                Catch ex As Exception
+                    _log.Info("Error in starting the service: " & ex.Message)
+
+                Finally
+
+                End Try
+            End If
+
+            _log.Info("Press a key to end the application...")
+
+
+            Return True
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+
+        End Try
+    End Function
+#End Region
+
+#Region " Check MsSQL Server Service Exists "
+    Public Shared Function checkMsSQLServerService(ByVal strMsSQLType As String) As Boolean
+        Try
+            If strMsSQLType = "LOCALSQLEXPRESS" Then
+                _log.Info("This is not a express server moving to SQL Server")
+                Return False
+            End If
+
+            Dim myServiceName As String = "MSSQL$MSSQLSERVER" 'service name of SQL Server Express
+            Dim status As String  'service status (For example, Running or Stopped)
+            Dim mySC As ServiceController
+
+            _log.Info("Service: " & myServiceName)
+
+            'display service status: For example, Running, Stopped, or Paused
+            mySC = New ServiceController(myServiceName)
+            Try
+                status = mySC.Status.ToString
+            Catch ex As Exception
+                _log.Info("Service not found. It is probably not installed. [exception=" & ex.Message & "]")
+            End Try
+            _log.Info("Service status : " & status)
+
+            'if service is Stopped or StopPending, you can run it with the following code.
+            If mySC.Status.Equals(ServiceControllerStatus.Stopped) Or mySC.Status.Equals(ServiceControllerStatus.StopPending) Then
+                Try
+                    _log.Info("Starting the service...")
+                    mySC.Start()
+                    mySC.WaitForStatus(ServiceControllerStatus.Running)
+                    _log.Info("The service is now " & mySC.Status.ToString)
+
+                Catch ex As Exception
+                    _log.Info("Error in starting the service: " & ex.Message)
+                End Try
+            End If
+
+            _log.Info("Press a key to end the application...")
+
+
+            Return True
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+
+        End Try
+    End Function
+#End Region
+
+#Region " Check MsSQL Database Data Exists "
+    Public Shared Function CheckMsSQLDBDataExists(ByVal conn As String) As Boolean
+        Dim bRet As Boolean = False
+        Try
+            Dim cmdText As String = "SELECT * FROM orgsite"
+
+            Using sqlConnection As SqlConnection = New SqlConnection(conn)
+                sqlConnection.Open()
+                _log.Info("Opening sql connection and using the orgsite table")
+
+                Using sqlCmd As SqlCommand = New SqlCommand(cmdText, sqlConnection)
+                    Using reader As SqlDataReader = sqlCmd.ExecuteReader
+                        bRet = reader.HasRows
+                        _log.Info("Database exists and containes data")
+                    End Using
+                End Using
+            End Using
+
+            Return bRet
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+
+        End Try
+    End Function
+
+#End Region
+
+#Region " Check MySQL Database Exists "
+    Public Shared Function CheckMySQLDBExists(ByVal conn As String) As Boolean
+        Try
+            Dim bRet As Boolean = False
+
+            Dim cmdText As String = "SELECT * FROM mysql.user"
+
+            Dim connBuilder As MySqlConnectionStringBuilder = New MySqlConnectionStringBuilder
+            connBuilder.ConnectionString = conn
+            Dim strserver As String = connBuilder.Server
+            Dim strdatabase As String = connBuilder.Database
+
+            Using MysqlConnection As MySqlConnection = New MySqlConnection(conn)
+                MysqlConnection.Open()
+                _log.Info("Opening Mysql connection verifying if database exists")
+
+                Using MysqlCmd As MySqlCommand = New MySqlCommand(cmdText, MysqlConnection)
+                    Using reader As MySqlDataReader = MysqlCmd.ExecuteReader
+                        bRet = reader.HasRows
+                        _log.Info("Database exists...")
+                    End Using
+                End Using
+
+            End Using
+
+            Return bRet
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+
+        End Try
+    End Function
+#End Region
+
+#Region " Check Database Exists "
+    Public Shared Function CheckMsSQLDBExists(ByVal conn As String) As Boolean
+        Dim bRet As Boolean = False
+        Try
+            Dim cmdText As String = "SELECT * FROM master.dbo.sysdatabases WHERE name = 'SHOP'"
+
+            Dim connBuilder As System.Data.SqlClient.SqlConnectionStringBuilder = New System.Data.SqlClient.SqlConnectionStringBuilder()
+            connBuilder.ConnectionString = conn
+            Dim strserver As String = connBuilder.DataSource
+            Dim strdatabase As String = connBuilder.InitialCatalog
+
+            Using sqlConnection As SqlConnection = New SqlConnection(conn.Replace(strdatabase, "MASTER"))
+                Try
+                    sqlConnection.Open()
+                Catch ex As SqlException
+                    _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+                    'MessageBox.Show("Could not make a connection to the database, verify the connection", "Database connections", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    _log.Error("Could not make a connection to the database, verify the connection")
+                    Return False
+                End Try
+
+                _log.Info("Opening sql connection And using the master database")
+
+                Using sqlCmd As SqlCommand = New SqlCommand(cmdText, sqlConnection)
+                    Using reader As SqlDataReader = sqlCmd.ExecuteReader
+                        bRet = reader.HasRows
+                        If bRet Then
+                            _log.Info("Database for MyFFLBook exists...")
+                        Else
+                            _log.Info("Database for MyFFLBook does not exist...")
+                        End If
+                    End Using
+                End Using
+            End Using
+
+            Return bRet
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            'MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+
+        End Try
+    End Function
+#End Region
+
+#Region " Get Parameter "
+    Public Shared Function CheckParameter(ByVal paramname As String, ByVal conn As String) As String
+        Dim bRet As String = "0"
+        Try
+            Dim cmdText As String = "SELECT value FROM infparameter where name = '" & paramname & "'"
+
+            Using sqlConnection As SqlConnection = New SqlConnection(conn)
+                Try
+                    sqlConnection.Open()
+                    _log.Info("Opening sql connection and using the infparameter")
+                Catch ex As SqlException
+                    _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+                    _log.Error("Could not make a connection to the database, verify the connection")
+                    Return False
+                End Try
+
+                Using sqlCmd As SqlCommand = New SqlCommand(cmdText, sqlConnection)
+                    Dim strResult As String
+                    Try
+                        strResult = sqlCmd.ExecuteScalar().ToString()
+                    Catch ex As SqlException
+                        _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+                    End Try
+                    If bRet IsNot Nothing Then
+                        bRet = strResult.ToString()
+                    End If
+                    _log.Info("getting the value " & bRet & " from the infparameter called " & paramname)
+                End Using
+            End Using
+
+            Return bRet
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            'MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+
+        End Try
+    End Function
+
+#End Region
+
+#Region " Export DataGridView to CSV "
+    ''' <summary>
+    ''' Export DatagridView Data to a CSV
+    ''' </summary>
+    ''' <param name="datagridview"></param>
+    ''' <param name="strfilename"></param>
+    ''' <param name="delimeter"></param>
+    ''' <returns></returns>
+    Public Shared Function DataGridViewTocsv(ByRef datagridview As DataGridView, ByRef strfilename As String, ByRef delimeter As Char)
+        'https://github.com/ukushu/DataExporter
+        'https://stackoverflow.com/questions/4959722/how-can-i-turn-a-datatable-to-a-csv/52684280#52684280
+        Try
+            Dim sb As New StringBuilder
+            For i As Integer = 0 To datagridview.Rows.Count - 1
+                Dim array As String() = New String(datagridview.Columns.Count - 1) {}
+                If i.Equals(0) Then
+                    For j As Integer = 0 To datagridview.Columns.Count - 1
+                        array(j) = datagridview.Columns(j).HeaderText.Replace(delimeter, "~") '.Replace("ID", "Scan")
+                        '_log.Info("Exporting header " & j.ToString)
+                    Next
+                    sb.AppendLine(String.Join(delimeter, array))
+                End If
+                For j As Integer = 0 To datagridview.Columns.Count - 1
+                    If Not datagridview.Rows(i).IsNewRow Then
+                        array(j) = datagridview(j, i).Value.ToString.Replace(delimeter, "~").Replace(vbCr, "").Replace(vbLf, "").ToString
+                        '_log.Info("Exporting data " & j.ToString)
+                    End If
+                Next
+                If Not datagridview.Rows(i).IsNewRow Then
+                    sb.AppendLine(String.Join(delimeter, array))
+                    '_log.Info("Adding a new line to export")
+
+                End If
+            Next
+            File.WriteAllText(strfilename, sb.ToString)
+            _log.Info("Created file: " & strfilename)
+
+            Return strfilename
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+
+        End Try
+#Disable Warning BC42105 ' Function doesn't return a value on all code paths
+    End Function
+#Enable Warning BC42105 ' Function doesn't return a value on all code paths
+#End Region
+
+#Region " Get Age "
+    'https://stackoverflow.com/questions/16874911/compute-age-from-given-birthdate
+    Public Shared Function GetCurrentAge(ByVal dob As Date) As Integer
+        Dim age As Integer
+        age = Today.Year - dob.Year
+        If (dob > Today.AddYears(-age)) Then age -= 1
+        Return age
+    End Function
+
+    'https://stackoverflow.com/questions/16874911/compute-age-from-given-birthdate
+    Public Shared Function Age(DOfB As Object) As String
+        If (Month(Date.Today) * 100) + Date.Today.Day >= (Month(DOfB) * 100) + DOfB.Day Then
+            Return DateDiff(DateInterval.Year, DOfB, Date.Today)
+        Else
+            Return DateDiff(DateInterval.Year, DOfB, Date.Today) - 1
+        End If
+    End Function
+#End Region
+
+#Region " Scale Image "
+    ''' <summary>
+    ''' Scale and Imaage to a certain size
+    ''' </summary>
+    ''' <param name="OldImage"></param>
+    ''' <param name="TargetHeight"></param>
+    ''' <param name="TargetWidth"></param>
+    ''' <returns></returns>
+    Public Shared Function ScaleImage(ByVal OldImage As Image, ByVal TargetHeight As Integer,
+                           ByVal TargetWidth As Integer) As Image
+
+        Dim NewHeight As Integer = TargetHeight
+        Dim NewWidth As Integer = CInt(NewHeight / OldImage.Height * OldImage.Width)
+
+        If NewWidth > TargetWidth Then
+            NewWidth = TargetWidth
+            NewHeight = CInt(NewWidth / OldImage.Width * OldImage.Height)
+        End If
+
+        Dim NewImage As Image = New Bitmap(OldImage, NewWidth, NewHeight)
+
+        Return NewImage
+
+    End Function
+#End Region
+
+#Region " Run SQLSMD "
+    Public Shared Function RunSQLCMD(ByVal connString As String, ByVal WorkingDirectory As String, ByVal QueryToExceute As String, ByVal ExportFileName As String) As Boolean
+        Try
+
+            'https://stackoverflow.com/questions/42733358/how-to-run-sqlcmd-script-using-vb-net
+            Dim builder As New Common.DbConnectionStringBuilder
+
+            builder.ConnectionString = connString
+            Dim ServerName = builder("Data Source")
+            Dim DatabaseName = builder("Initial Catalog")
+
+            _log.Info("Staring sqlcmd script run process")
+
+            Dim DoubleQuote As String = Chr(34)
+            Dim Process = New Process()
+            Process.StartInfo.UseShellExecute = False
+            Process.StartInfo.RedirectStandardOutput = True
+            Process.StartInfo.RedirectStandardError = True
+            Process.StartInfo.CreateNoWindow = True
+            Process.StartInfo.FileName = "SQLCMD.EXE"
+            'Dim strargs As String = "SQLCMD.EXE -S " & ServerName & " -d " & DatabaseName & " -E -i """ & QueryToExceute & """ -o " & ExportFileName & "  -h-1 -s"","" -w 700"
+            'Process.StartInfo.Arguments = "-S " & ServerName & " -d " & DatabaseName & " -E -i " & DoubleQuote & DoubleQuote & QueryToExceute & DoubleQuote & DoubleQuote & " -o " & ExportFileName & " -h-1 -s"","" -w 700"
+            'Process.StartInfo.Arguments = $"-S {ServerName} -d {DatabaseName} -E -i """"{QueryToExceute}"""" -o {ExportFileName} -h-1 -s"","" -w 700"
+            Process.StartInfo.Arguments = String.Format("{0} {1} {2} {3} {4} ""{5}"" {6} ""{7}"" {8}", "-S", ServerName, "-d ", DatabaseName, "-E -i ", QueryToExceute, "-o", ExportFileName, "-h -1 -s"","" -w 700")
+            'Process.StartInfo.Arguments = "-S " \ {ServerName} \ " -d " \ {DatabaseName} \ " -E -i " & String.Format("\{0}\", QueryToExceute) & " -o " & ExportFileName & "  -h-1 -s"","" -w 700"
+            '_log.Info("Arguments sent over to start the DB setup: " & strargs)
+            _log.Info("Running the following " & Process.StartInfo.FileName.ToString)
+            _log.Info("With the following Arguments " & Process.StartInfo.Arguments.ToString)
+            'Process.StartInfo.WorkingDirectory = {WorkingDirectory}
+            _log.Info($"Exporting results in this directory {ExportFileName}")
+            Process.Start()
+            Process.WaitForExit()
+            _log.Info("Finished")
+
+            'Dim startInfo = New ProcessStartInfo()
+            'startInfo.FileName = "SQLCMD.EXE"
+            'startInfo.Arguments = String.Format("-S {0} -d {1}, -U {2} -P {3} -i {4}", server, database, user, password, File)
+            'Process.Start(startInfo)
+
+            Return True
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        Finally
+
+
+        End Try
+    End Function
+#End Region
+
+#Region " Get only Number in String "
+    ''' <summary>
+    ''' Get the numbers only from a string
+    ''' </summary>
+    ''' <param name="ValueSrting"></param>
+    ''' <returns></returns>
+    Public Shared Function GetNumbersFromString(ByVal ValueSrting As String) As String
+        'Convert the barcode field to numeric only as we have letter appened to it
+        Dim nonNumericCharacters As New System.Text.RegularExpressions.Regex("\D")
+        Dim numericOnlyString As String = nonNumericCharacters.Replace(ValueSrting, String.Empty)
+
+        Return numericOnlyString
+    End Function
+#End Region
+
+#Region " CSV to Datatable "
+    ''' <summary>
+    ''' Covert and CSV file with Headers to a datatable
+    ''' </summary>
+    ''' <param name="strfilename"></param>
+    ''' <param name="delimeter"></param>
+    ''' <returns></returns>
+    Public Shared Function csvToDatatable(ByVal strfilename As String, ByVal delimeter As Char)
+        Try
+            Dim dt As New System.Data.DataTable
+            Dim firstLine As Boolean = True
+            If IO.File.Exists(strfilename) Then
+                Dim SR As StreamReader = New StreamReader(strfilename)
+                Dim line As String = SR.ReadLine()
+                Dim strArray As String() = line.Split(delimeter)
+                Dim row As DataRow
+
+                For Each s As String In strArray
+                    dt.Columns.Add(New DataColumn(s))
+                Next
+
+                Do
+                    line = SR.ReadLine
+                    If Not line = String.Empty Then
+                        row = dt.NewRow()
+                        row.ItemArray = line.Split(delimeter)
+                        dt.Rows.Add(row)
+                    Else
+                        Exit Do
+                    End If
+                Loop
+            End If
+
+            Return dt
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+
+        End Try
+    End Function
+#End Region
+
+#Region " Datatable to CSV "
+    ''' <summary>
+    ''' Converts a Data table to a CSV format
+    ''' </summary>
+    ''' <param name="input"></param>
+    ''' <returns></returns>
+    Public Shared Function datatableToCSV(ByVal input As String) As String
+        'https://www.codingvila.com/2018/12/export-dataset-datatable-to-csv-file-using-csharp-and-vb-dot-net.html
+
+        ''Use
+        'Dim sb As StringBuilder = New StringBuilder()
+        'Dim dt As DataTable = clsFunctions.bindingSourceToDataTable(Me.OrgcustomerBindingSource)
+
+        'For Each dr As DataRow In dt.Rows
+
+        '    For Each dc As DataColumn In dt.Columns
+        '        sb.Append(clsFunctions.datatableToCSV(dr(dc.ColumnName).ToString()) & ",")
+        '    Next
+
+        '    sb.Remove(sb.Length - 1, 1)
+        '    sb.AppendLine()
+        'Next
+        'If IO.File.Exists(strFile) Then
+        '    IO.File.Delete(strFile)
+        'End If
+        'IO.File.WriteAllText(Application.StartupPath & "\scripts\customers.csv", sb.ToString())
+
+        Try
+            If input Is Nothing Then Return String.Empty
+            Dim containsQuote As Boolean = False
+            Dim containsComma As Boolean = False
+            Dim len As Integer = input.Length
+            Dim i As Integer = 0
+
+            While i < len AndAlso (containsComma = False OrElse containsQuote = False)
+                Dim ch As Char = input(i)
+
+                If ch = """"c Then
+                    containsQuote = True
+                ElseIf ch = ","c Then
+                    containsComma = True
+                End If
+
+                i += 1
+            End While
+
+            If containsQuote AndAlso containsComma Then input = input.Replace("""", """""")
+
+            If containsComma Then
+                Return """" & input & """"
+            Else
+                Return input
+            End If
+
+        Catch
+            Throw
+        End Try
+    End Function
+#End Region
+
+#Region " Converts BindingSource to Datatable "
+    ''' <summary>
+    ''' Converts and Binding Source to a Datatable
+    ''' </summary>
+    ''' <param name="bs"></param>
+    ''' <returns></returns>
+    Public Shared Function bindingSourceToDataTable(ByVal bs As BindingSource) As DataTable
+        Dim bsFirst = bs
+
+        While TypeOf bsFirst.DataSource Is BindingSource
+            bsFirst = CType(bsFirst.DataSource, BindingSource)
+        End While
+
+        Dim dt As DataTable
+
+        If TypeOf bsFirst.DataSource Is DataSet Then
+            dt = (CType(bsFirst.DataSource, DataSet)).Tables(bsFirst.DataMember)
+        ElseIf TypeOf bsFirst.DataSource Is DataTable Then
+            dt = CType(bsFirst.DataSource, DataTable)
+        Else
+            Return Nothing
+        End If
+
+        If bsFirst IsNot bs Then
+            If dt.DataSet Is Nothing Then Return Nothing
+            dt = dt.DataSet.Relations(bs.DataMember).ChildTable
+        End If
+
+        Return dt
+    End Function
+#End Region
+
+#Region " Export to CSV "
+    Public Shared Function exportToCSV(ByRef datagridview As DataGridView, ByRef strfilename As String, ByRef delimeter As Char)
+        Try
+            'Build the CSV file data as a Comma separated string.
+            Dim csv As String = String.Empty
+
+            'Add the Header row for CSV file.
+            For Each column As DataGridViewColumn In datagridview.Columns
+                csv += column.HeaderText & ","c
+            Next
+
+            'Add new line.
+            csv += vbCr & vbLf
+
+            'Adding the Rows
+            For Each row As DataGridViewRow In datagridview.Rows
+                For Each cell As DataGridViewCell In row.Cells
+                    'Add the Data rows.
+                    csv += cell.Value.ToString().Replace(",", ";") & ","c
+                Next
+
+                'Add new line.
+                csv += vbCr & vbLf
+            Next
+
+            'Exporting to Excel
+            File.WriteAllText(strfilename, csv)
+
+            Return strfilename
+
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Function
+
+#End Region
+
+#Region " Create Data Tables "
+    Public Shared Function CreateDataTable(Of T)(ByVal list As IEnumerable(Of T)) As DataTable
+        Dim type As Type = GetType(T)
+        Dim properties = type.GetProperties()
+        Dim dataTable As DataTable = New DataTable()
+        dataTable.TableName = GetType(T).FullName
+        _log.Info("Table Name: " & GetType(T).FullName)
+
+        For Each info As PropertyInfo In properties
+            dataTable.Columns.Add(New DataColumn(info.Name, If(Nullable.GetUnderlyingType(info.PropertyType), info.PropertyType)))
+            _log.Info("Column Header: " & info.Name)
+        Next
+
+        For Each entity As T In list
+            Dim values As Object() = New Object(properties.Length - 1) {}
+
+            For i As Integer = 0 To properties.Length - 1
+                values(i) = properties(i).GetValue(entity)
+                '_log.Info("Field: " & values(i).ToString)
+            Next
+
+            dataTable.Rows.Add(values)
+            '_log.Info("Fields: " & values.ToString)
+        Next
+
+        Return dataTable
+    End Function
+    Public Shared Function ToDataTable(Of T)(ByVal self As IEnumerable(Of T)) As DataTable
+        Dim properties = GetType(T).GetProperties()
+        Dim dataTable = New DataTable()
+
+        For Each Info As PropertyInfo In properties
+            dataTable.Columns.Add(Info.Name, If(Nullable.GetUnderlyingType(Info.PropertyType), Info.PropertyType))
+            _log.Info("Column Header: " & Info.Name)
+        Next
+
+        For Each entity As T In self
+            dataTable.Rows.Add(properties.[Select](Function(p) p.GetValue(entity)).ToArray())
+            _log.Info("Fields: " & properties.[Select](Function(p) p.GetValue(entity)).ToArray().ToString)
+        Next
+
+        Return dataTable
+    End Function
+#End Region
 
 #Region " Validate Controls "
     Public Function Validate(ByVal control As Control) As Boolean
@@ -793,162 +1533,6 @@ Err_MultiLetter:
 
 #End Region
 
-#Region " Scale Image "
-    ''' <summary>
-    ''' Scale and Imaage to a certain size
-    ''' </summary>
-    ''' <param name="OldImage"></param>
-    ''' <param name="TargetHeight"></param>
-    ''' <param name="TargetWidth"></param>
-    ''' <returns></returns>
-    Public Shared Function ScaleImage(ByVal OldImage As Image, ByVal TargetHeight As Integer,
-                           ByVal TargetWidth As Integer) As Image
-
-        Dim NewHeight As Integer = TargetHeight
-        Dim NewWidth As Integer = CInt(NewHeight / OldImage.Height * OldImage.Width)
-
-        If NewWidth > TargetWidth Then
-            NewWidth = TargetWidth
-            NewHeight = CInt(NewWidth / OldImage.Width * OldImage.Height)
-        End If
-
-        Dim NewImage As Image = New Bitmap(OldImage, NewWidth, NewHeight)
-
-        Return NewImage
-
-    End Function
-#End Region
-
-#Region " CSV to Datatable "
-    ''' <summary>
-    ''' Covert and CSV file with Headers to a datatable
-    ''' </summary>
-    ''' <param name="strfilename"></param>
-    ''' <param name="delimeter"></param>
-    ''' <returns></returns>
-    Public Shared Function csvToDatatable(ByVal strfilename As String, ByVal delimeter As Char)
-        Try
-            Dim dt As New System.Data.DataTable
-            Dim firstLine As Boolean = True
-            If IO.File.Exists(strfilename) Then
-                Dim SR As StreamReader = New StreamReader(strfilename)
-                Dim line As String = SR.ReadLine()
-                Dim strArray As String() = line.Split(delimeter)
-                Dim row As DataRow
-
-                For Each s As String In strArray
-                    dt.Columns.Add(New DataColumn(s))
-                Next
-
-                Do
-                    line = SR.ReadLine
-                    If Not line = String.Empty Then
-                        row = dt.NewRow()
-                        row.ItemArray = line.Split(delimeter)
-                        dt.Rows.Add(row)
-                    Else
-                        Exit Do
-                    End If
-                Loop
-            End If
-
-            Return dt
-
-        Catch ex As Exception
-            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
-            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-
-        End Try
-    End Function
-#End Region
-
-#Region " Export DataGridView to CSV "
-    ''' <summary>
-    ''' Export DatagridView Data to a CSV
-    ''' </summary>
-    ''' <param name="datagridview"></param>
-    ''' <param name="strfilename"></param>
-    ''' <param name="delimeter"></param>
-    ''' <returns></returns>
-    Public Shared Function DataGridViewTocsv(ByRef datagridview As DataGridView, ByRef strfilename As String, ByRef delimeter As Char)
-        'https://github.com/ukushu/DataExporter
-        'https://stackoverflow.com/questions/4959722/how-can-i-turn-a-datatable-to-a-csv/52684280#52684280
-        Try
-            Dim sb As New StringBuilder
-            For i As Integer = 0 To datagridview.Rows.Count - 1
-                Dim array As String() = New String(datagridview.Columns.Count - 1) {}
-                If i.Equals(0) Then
-                    For j As Integer = 0 To datagridview.Columns.Count - 1
-                        array(j) = datagridview.Columns(j).HeaderText.Replace(delimeter, "~") '.Replace("ID", "Scan")
-                        _log.Info("Exporting header " & j.ToString)
-                    Next
-                    sb.AppendLine(String.Join(delimeter, array))
-                End If
-                For j As Integer = 0 To datagridview.Columns.Count - 1
-                    If Not datagridview.Rows(i).IsNewRow Then
-                        array(j) = datagridview(j, i).Value.ToString.Replace(delimeter, "~").Replace(vbCr, "").Replace(vbLf, "").ToString
-                        _log.Info("Exporting data " & j.ToString)
-                    End If
-                Next
-                If Not datagridview.Rows(i).IsNewRow Then
-                    sb.AppendLine(String.Join(delimeter, array))
-                    _log.Info("Adding a new line to export")
-
-                End If
-            Next
-            File.WriteAllText(strfilename, sb.ToString)
-            _log.Info("Adding line " & sb.ToString)
-
-            Return strfilename
-
-        Catch ex As Exception
-            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
-            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-
-        End Try
-    End Function
-#End Region
-
-#Region " Export to CSV "
-    Public Shared Function exportToCSV(ByRef datagridview As DataGridView, ByRef strfilename As String, ByRef delimeter As Char)
-        Try
-            'Build the CSV file data as a Comma separated string.
-            Dim csv As String = String.Empty
-
-            'Add the Header row for CSV file.
-            For Each column As DataGridViewColumn In datagridview.Columns
-                csv += column.HeaderText & ","c
-            Next
-
-            'Add new line.
-            csv += vbCr & vbLf
-
-            'Adding the Rows
-            For Each row As DataGridViewRow In datagridview.Rows
-                For Each cell As DataGridViewCell In row.Cells
-                    'Add the Data rows.
-                    csv += cell.Value.ToString().Replace(",", ";") & ","c
-                Next
-
-                'Add new line.
-                csv += vbCr & vbLf
-            Next
-
-            'Exporting to Excel
-            File.WriteAllText(strfilename, csv)
-
-            Return strfilename
-
-        Catch ex As Exception
-            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
-            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Function
-
-#End Region
-
 #Region " Check Email Addresses "
     Public Shared Function IsValidEmailFormat(ByVal s As String) As Boolean
         Try
@@ -1064,92 +1648,6 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Get Age "
-    'https://stackoverflow.com/questions/16874911/compute-age-from-given-birthdate
-    Public Function GetCurrentAge(ByVal dob As Date) As Integer
-        Dim age As Integer
-        age = Today.Year - dob.Year
-        If (dob > Today.AddYears(-age)) Then age -= 1
-        Return age
-    End Function
-
-    'https://stackoverflow.com/questions/16874911/compute-age-from-given-birthdate
-    Public Shared Function Age(DOfB As Object) As String
-        If (Month(Date.Today) * 100) + Date.Today.Day >= (Month(DOfB) * 100) + DOfB.Day Then
-            Return DateDiff(DateInterval.Year, DOfB, Date.Today)
-        Else
-            Return DateDiff(DateInterval.Year, DOfB, Date.Today) - 1
-        End If
-    End Function
-#End Region
-
-#Region " Get only Number in String "
-    ''' <summary>
-    ''' Get the numbers only from a string
-    ''' </summary>
-    ''' <param name="ValueSrting"></param>
-    ''' <returns></returns>
-    Public Shared Function GetNumbersFromString(ByVal ValueSrting As String) As String
-        'Convert the barcode field to numeric only as we have letter appened to it
-        Dim nonNumericCharacters As New System.Text.RegularExpressions.Regex("\D")
-        Dim numericOnlyString As String = nonNumericCharacters.Replace(ValueSrting, String.Empty)
-
-        Return numericOnlyString
-    End Function
-#End Region
-
-#Region " Run SQLSMD "
-    Public Shared Function runSQLCMD(ByVal connString As String, ByVal WorkingDirectory As String, ByVal QueryToExceute As String, ByVal ExportFileName As String) As Boolean
-        Try
-
-            'https://stackoverflow.com/questions/42733358/how-to-run-sqlcmd-script-using-vb-net
-            Dim builder As New Common.DbConnectionStringBuilder
-
-            builder.ConnectionString = connString
-            Dim ServerName = builder("Data Source")
-            Dim DatabaseName = builder("Initial Catalog")
-
-            _log.Info("Staring sqlcmd script run process")
-
-            Dim DoubleQuote As String = Chr(34)
-            Dim Process = New Process()
-            Process.StartInfo.UseShellExecute = False
-            Process.StartInfo.RedirectStandardOutput = True
-            Process.StartInfo.RedirectStandardError = True
-            Process.StartInfo.CreateNoWindow = True
-            Process.StartInfo.FileName = "SQLCMD.EXE"
-            'Dim strargs As String = "SQLCMD.EXE -S " & ServerName & " -d " & DatabaseName & " -E -i """ & QueryToExceute & """ -o " & ExportFileName & "  -h-1 -s"","" -w 700"
-            'Process.StartInfo.Arguments = "-S " & ServerName & " -d " & DatabaseName & " -E -i " & DoubleQuote & DoubleQuote & QueryToExceute & DoubleQuote & DoubleQuote & " -o " & ExportFileName & " -h-1 -s"","" -w 700"
-            'Process.StartInfo.Arguments = $"-S {ServerName} -d {DatabaseName} -E -i """"{QueryToExceute}"""" -o {ExportFileName} -h-1 -s"","" -w 700"
-            Process.StartInfo.Arguments = String.Format("{0} {1} {2} {3} {4} ""{5}"" {6} ""{7}"" {8}", "-S", ServerName, "-d ", DatabaseName, "-E -i ", QueryToExceute, "-o", ExportFileName, "-h -1 -s"","" -w 700")
-            'Process.StartInfo.Arguments = "-S " \ {ServerName} \ " -d " \ {DatabaseName} \ " -E -i " & String.Format("\{0}\", QueryToExceute) & " -o " & ExportFileName & "  -h-1 -s"","" -w 700"
-            '_log.Info("Arguments sent over to start the DB setup: " & strargs)
-            _log.Info("Running the following " & Process.startinfo.filename.ToString)
-            _log.Info("With the following Arguments " & Process.StartInfo.Arguments.ToString)
-            'Process.StartInfo.WorkingDirectory = {WorkingDirectory}
-            _log.Info($"Exporting results in this directory {ExportFileName}")
-            Process.Start()
-            Process.WaitForExit()
-            _log.Info("Finished")
-
-            'Dim startInfo = New ProcessStartInfo()
-            'startInfo.FileName = "SQLCMD.EXE"
-            'startInfo.Arguments = String.Format("-S {0} -d {1}, -U {2} -P {3} -i {4}", server, database, user, password, File)
-            'Process.Start(startInfo)
-
-            Return True
-
-        Catch ex As Exception
-            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
-            MessageBox.Show(ex.ToString, "", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return False
-        Finally
-
-
-        End Try
-    End Function
-#End Region
-
 #Region " Convert Numbers to Words "
     Shared Function convertToWords(input As Integer) As String
 
@@ -1230,6 +1728,113 @@ Err_MultiLetter:
     End Function
 #End Region
 
+#Region " Check Currency "
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="currency"></param>
+    ''' <returns></returns>
+    Public Shared Function IsCurrency(ByVal currency As String) As Boolean
+        'Dim regex As Regex = New Regex("^\d*\.?\d?\d?$")
+        'Dim y As Boolean = regex.IsMatch(currency)
+        'Return y
+
+        Dim numar As Double
+        Try
+            If Double.TryParse(currency, numar) Then 'did the user enter a number
+                Dim rmndr As Double
+                rmndr = numar Mod 1
+                If rmndr = 0 Then 'is it integer
+                    '    Label1.Text = "The number is integer"
+                    Return True
+                Else 'or decimal
+                    '    Label1.Text = "The number is Decimal"
+                    Return True
+                End If
+                'Stop
+            Else
+                'Label1.Text = "not a number"
+                Return False
+            End If
+        Catch ex As Exception
+            _log.Error(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+            Throw New Exception(ex.ToString & vbCrLf & ex.StackTrace.ToString)
+        Finally
+
+        End Try
+    End Function
+#End Region
+
+#Region " Smtp Mail "
+    Public Shared Function SmptEmail(ByRef ToEmail As String,
+                                    ByRef Subject As String, ByRef FileName As String,
+                                    Optional ByRef FromEmail As String = "no_repy@myfflbook.com",
+                                    Optional ByRef SMTPServer As String = "localhost",
+                                    Optional ByRef SMTPPort As Integer = 25)
+
+        'https://stackoverflow.com/questions/20228644/smtpexception-unable-to-read-data-from-the-transport-connection-net-io-connect
+
+        'Using mailMessage As MailMessage = New MailMessage(New MailAddress(ToEmail), New MailAddress(ToEmail))
+        '    mailMessage.Body = body
+        '    mailMessage.Subject = Subject
+
+        '    Try
+        '        Dim SmtpServer As SmtpClient = New SmtpClient()
+        '        SmtpServer.Credentials = New System.Net.NetworkCredential(email, password)
+        '        SmtpServer.Port = 587
+        '        SmtpServer.Host = "smtp.gmail.com"
+        '        SmtpServer.EnableSsl = True
+        '        mail = New MailMessage()
+        '        Dim addr As String() = ToEmail.Split(","c)
+        '        mail.From = New MailAddress(email)
+        '        Dim i As Byte
+
+        '        For i = 0 To addr.Length - 1
+        '            mail.[To].Add(addr(i))
+        '        Next
+
+        '        mail.Subject = Subject
+        '        mail.Body = body
+        '        mail.IsBodyHtml = True
+        '        mail.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure
+        '        mail.ReplyToList.Add(ToEmail)
+        '        SmtpServer.Send(mail)
+        '        Return "Mail Sent"
+        '    Catch ex As Exception
+        '        Dim exp As String = ex.ToString()
+        '        Return "Mail Not Sent ... and ther error is " & exp
+        '    End Try
+        'End Using
+
+    End Function
+#End Region
+
+#Region " Convert Image to Bytes "
+    ''' <summary>
+    ''' This is to convert a image to bytes
+    ''' </summary>
+    ''' <param name="imageIn"></param>
+    ''' <returns></returns>
+    Public Shared Function imageToByteArray(ByVal imageIn As System.Drawing.Image) As Byte()
+        Dim ms As MemoryStream = New MemoryStream()
+        imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Gif)
+        Return ms.ToArray()
+    End Function
+#End Region
+
+#Region " Convert bytes back to an Image"
+    ''' <summary>
+    ''' This is to convert bytes back to an Image
+    ''' </summary>
+    ''' <param name="byteArrayIn"></param>
+    ''' <returns></returns>
+    Public Shared Function byteArrayToImage(ByVal byteArrayIn As Byte()) As Image
+        Dim ms As MemoryStream = New MemoryStream(byteArrayIn)
+        Dim returnImage As Image = Image.FromStream(ms)
+        Return returnImage
+    End Function
+#End Region
+
 #Region " Scan Drivers License "
 
 #End Region
@@ -1275,7 +1880,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region "Check for change"
+#Region " Check for change "
     Public Shared Function DataChanged(ByVal form As Form) As Boolean
         Dim changed As Boolean = False
         If form Is Nothing Then Return changed
@@ -1473,51 +2078,6 @@ Err_MultiLetter:
         End If
 
         Return dt
-    End Function
-#End Region
-
-#Region " Create Data Tables "
-    Public Shared Function CreateDataTable(Of T)(ByVal list As IEnumerable(Of T)) As DataTable
-        Dim type As Type = GetType(T)
-        Dim properties = type.GetProperties()
-        Dim dataTable As DataTable = New DataTable()
-        dataTable.TableName = GetType(T).FullName
-        _log.Info("Table Name: " & GetType(T).FullName)
-
-        For Each info As PropertyInfo In properties
-            dataTable.Columns.Add(New DataColumn(info.Name, If(Nullable.GetUnderlyingType(info.PropertyType), info.PropertyType)))
-            _log.Info("Column Header: " & info.Name)
-        Next
-
-        For Each entity As T In list
-            Dim values As Object() = New Object(properties.Length - 1) {}
-
-            For i As Integer = 0 To properties.Length - 1
-                values(i) = properties(i).GetValue(entity)
-                '_log.Info("Field: " & values(i).ToString)
-            Next
-
-            dataTable.Rows.Add(values)
-            '_log.Info("Fields: " & values.ToString)
-        Next
-
-        Return dataTable
-    End Function
-    Public Shared Function ToDataTable(Of T)(ByVal self As IEnumerable(Of T)) As DataTable
-        Dim properties = GetType(T).GetProperties()
-        Dim dataTable = New DataTable()
-
-        For Each Info As PropertyInfo In properties
-            dataTable.Columns.Add(Info.Name, If(Nullable.GetUnderlyingType(Info.PropertyType), Info.PropertyType))
-            _log.Info("Column Header: " & Info.Name)
-        Next
-
-        For Each entity As T In self
-            dataTable.Rows.Add(properties.[Select](Function(p) p.GetValue(entity)).ToArray())
-            _log.Info("Fields: " & properties.[Select](Function(p) p.GetValue(entity)).ToArray().ToString)
-        Next
-
-        Return dataTable
     End Function
 #End Region
 

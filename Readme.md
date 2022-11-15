@@ -1,1 +1,1 @@
-﻿This is an acumulations of functions and class that I have used in projects throughout my years of coding.
+This is a class that has multiple functions that I use in multi projects.
