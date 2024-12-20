@@ -125,7 +125,6 @@
     <None Include=".github\FUNDING.yml" />
     <None Include=".github\ISSUE_TEMPLATE.md" />
     <None Include="app.config" />
-    <None Include="Changes.md" />
     <None Include="clsOutput.vb" />
     <None Include="clsXML.vb" />
     <Compile Include="clsProcessBarThreading.vb" />
