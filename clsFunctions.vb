@@ -301,7 +301,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " Check Database Exists "
+#Region " Check for MsSQL Database Exists "
     Public Shared Function CheckMsSQLDBExists(ByVal conn As String) As Boolean
         Dim bRet As Boolean = False
         Try
@@ -551,7 +551,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " CSV to Datatable "
+#Region " CSV file to Datatable "
     ''' <summary>
     ''' Covert and CSV file with Headers to a datatable
     ''' </summary>
@@ -595,7 +595,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " Datatable to CSV "
+#Region " Datatable to CSV file "
     ''' <summary>
     ''' Converts a Data table to a CSV format
     ''' </summary>
@@ -687,7 +687,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " Export to CSV "
+#Region " Export (DGV) data gridview to CSV file "
     Public Shared Function exportToCSV(ByRef datagridview As DataGridView, ByRef strfilename As String, ByRef delimeter As Char)
         Try
             'Build the CSV file data as a Comma separated string.
@@ -860,7 +860,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " From 16ths"
+#Region " Convert From 16ths to inches "
     ''' <summary>
     ''' Converts Sixteenths stored to inches
     ''' </summary>
@@ -879,7 +879,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " To 16ths"
+#Region " Convert inches to 16ths"
     ''' <summary>
     ''' Converts inches to Sixteenths
     ''' </summary>
@@ -893,7 +893,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " Encryption String "
+#Region " Encrypt and Decrypt String "
     ''' <summary>
     ''' Encrypt a String
     ''' </summary>
