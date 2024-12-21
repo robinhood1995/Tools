@@ -75,6 +75,11 @@
     <Reference Include="AForge.Video.DirectShow, Version=2.2.5.0, Culture=neutral, PublicKeyToken=61ea4348d43881b7, processorArchitecture=MSIL">
       <HintPath>..\SnD\packages\AForge.Video.DirectShow.2.2.5\lib\AForge.Video.DirectShow.dll</HintPath>
     </Reference>
+    <Reference Include="FAXCOMEXLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\FAXCOMEXLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="FreeSMTP.Net, Version=1.1.0.0, Culture=neutral, PublicKeyToken=986a9aa31056680b">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\FreeSMTP.Net\FreeSMTP.Net.dll</HintPath>
     </Reference>
@@ -83,7 +88,7 @@
     </Reference>
     <Reference Include="MySql.Data, Version=6.3.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector Net 6.3.9\Assemblies\v2.0\MySql.Data.dll</HintPath>
+      <HintPath>bin\Debug\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -115,7 +120,6 @@
     <Compile Include="clsCOMMS.vb" />
     <Compile Include="clsJulianDates.vb" />
     <Compile Include="clsParseSQLtxtParam.vb" />
-    <Compile Include="clsRSRGroup.vb" />
     <Compile Include="clsSettings.vb" />
     <Compile Include="clsDatabase.vb" />
     <Compile Include="clsFileInfo.vb" />
@@ -126,7 +130,6 @@
     <None Include=".github\ISSUE_TEMPLATE.md" />
     <None Include="app.config" />
     <None Include="clsOutput.vb" />
-    <None Include="clsXML.vb" />
     <Compile Include="clsProcessBarThreading.vb" />
     <None Include="Copy of clsCOMMS.vb" />
     <Compile Include="clsSqlDataProvider.vb" />
@@ -201,17 +204,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="FAXCOMEXLib">
-      <Guid>{2BF34C1A-8CAC-419F-8547-32FDF6505DB8}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

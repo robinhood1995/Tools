@@ -24,12 +24,13 @@ Public Class clsOutput
 
     Public Sub Start()
 
-        ' Um das Programm zu benutzen, um einen Befehl auf der
-        ' Konsole auszuführen (z.B. "netstat" oder "ping") kann man
-        ' anstelle von "cmd" bei Arguments einfach den entsprechenden
-        ' Befehl (z.B. "ping") einfügen und in der Eigenschaft 'Arguments'
-        ' die entsprechenden Argumente (beispielsweise bei "ping" die IP-
-        ' Adresse) angeben.
+        ' To use the program to execute a command on the
+        ' You can run the console (e.g. "netstat" or "ping")
+        ' instead of "cmd" for arguments, simply use the corresponding one
+        ' Insert command (e.g. "ping") and in the property 'Arguments'
+        ' the corresponding arguments (for example, for "ping" the IP address
+        ' address).
+
         m_Process = New Process
         With m_Process.StartInfo
             .FileName = "cmd"
@@ -41,7 +42,7 @@ Public Class clsOutput
         End With
         m_Process.Start()
 
-        ' Ändern der Datenströme, sodass wir bei Änderungen etwas mitbekommen.
+        ' Changing the data streams so that we are aware of changes.
         m_OutputThread = New Thread(AddressOf StreamOutput)
         m_OutputThread.IsBackground = True
         m_OutputThread.Start()

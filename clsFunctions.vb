@@ -921,7 +921,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " Check if Numberic "
+#Region " Check if data is Numberic Only "
     ''' <summary>
     ''' Value Numeric Check
     ''' </summary>
@@ -943,7 +943,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " Check if Alpha Only "
+#Region " Check if data is Alpha Only "
     ''' <summary>
     ''' Value String Check
     ''' </summary>
@@ -1027,7 +1027,7 @@ Public Class clsFunctions
     End Function
 #End Region
 
-#Region " Convert Numbers to Letter "
+#Region " Convert Column Numbers to Letter "
     'Author: Alan L. Lesmerises
     'From: http://www.freevbcode.com/ShowCode.asp?ID=4303
 
@@ -1092,7 +1092,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Column to Letter "
+#Region " Convert Column to Letter "
     ''' <summary>
     ''' Column number to letter
     ''' </summary>
@@ -1160,7 +1160,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Email "
+#Region " Email using NET mail "
     ''' <summary>
     ''' Send a email
     ''' </summary>
@@ -1224,7 +1224,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Loop throught rows "
+#Region " Loop throught rows column to get each data column "
     ''' <summary>
     ''' Loop through rows in a datagridview
     ''' </summary>
@@ -1284,7 +1284,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Get a Row in DGV to Datatable "
+#Region " Get a Row in (DGV) data gridview to Datatable "
     ''' <summary>
     ''' Get a specific row in a DataGridview by index
     ''' </summary>
@@ -1320,7 +1320,7 @@ Err_MultiLetter:
 
 #End Region
 
-#Region " Get Selected Rows in DGV to Datatable "
+#Region " Get Selected Rows in DGV data gridview to Datatable "
     ''' <summary>
     ''' Loop through a DataGridView and return the Selected Rows
     ''' </summary>
@@ -1382,7 +1382,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " CountOccurences "
+#Region " Count Occurences in a string "
     Shared Function CountOccurences(ByVal searchIn As String, ByVal searchFor As String) As Integer
         Dim ipos As Integer = 1
         Dim IntCount As Integer = 0
@@ -1453,7 +1453,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Ping Server"
+#Region " Ping Server "
     ''' <summary>
     ''' Ping Server
     ''' </summary>
@@ -1544,7 +1544,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Random Codes "
+#Region " Generate Random Codes String "
     Public Shared Function GetRandomString(ByVal iLength As Integer) As String
         Dim sResult As String = ""
         Dim rdm As New Random()
@@ -1728,7 +1728,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Check Currency "
+#Region " Check Sting if it is Currency "
     ''' <summary>
     ''' 
     ''' </summary>
@@ -1822,7 +1822,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Convert bytes back to an Image"
+#Region " Convert bytes back to an Image "
     ''' <summary>
     ''' This is to convert bytes back to an Image
     ''' </summary>
@@ -1833,10 +1833,6 @@ Err_MultiLetter:
         Dim returnImage As Image = Image.FromStream(ms)
         Return returnImage
     End Function
-#End Region
-
-#Region " Scan Drivers License "
-
 #End Region
 
 #Region " Split string and keep seprators "
@@ -1880,7 +1876,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Check for change "
+#Region " Check for Textbox changes on a winform "
     Public Shared Function DataChanged(ByVal form As Form) As Boolean
         Dim changed As Boolean = False
         If form Is Nothing Then Return changed
@@ -2081,7 +2077,7 @@ Err_MultiLetter:
     End Function
 #End Region
 
-#Region " Set the combobox to the correct item"
+#Region " Set the combobox to the correct item "
     Public Shared Sub FindItemByID(ByRef cbCombo As ComboBox, ByVal strID As String)
         Dim bLoading = False
         ' This sub is used to find an Item in a combobox and set the selected index of the combo box to that item...
@@ -2111,7 +2107,7 @@ Err_MultiLetter:
     End Sub
 #End Region
 
-#Region " Simple FTP Upload File"
+#Region " Simple FTP Upload File "
     ''' <summary>
     ''' Simple Upload file subroutine
     ''' Format "ftp://www.yourwebsitename.com/yourfilename.fileextension"
