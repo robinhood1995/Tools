@@ -236,15 +236,21 @@ Namespace Onling
 #End Region
 
 #Region "MySQL Connection"
-        Public Function MySqlConn(Optional ByVal MySqlport As Integer = 3306)
+        Public Function MySqlConn(Optional ByVal ConnectionString As String = "", Optional ByVal MySqlport As Integer = 3306)
 
             Try
-                'Dim OdbcDBConn As New OdbcConnection
-                MySqlDBConn.ConnectionString = "server=" & _MySqlhostname & ";" & _
-                                            "database=" & _MySqlDBName & ";" & _
-                                            "uid=" & _MySqlusername & ";" & _
-                                            "pwd=" & _MySqlpassword & ";" & _
-                                            "port=" & _MySqlport & ";"
+
+                If ConnectionString.Length > 0 Then
+                    MySqlDBConn.ConnectionString = ConnectionString
+                Else
+                    'Dim OdbcDBConn As New OdbcConnection
+                    MySqlDBConn.ConnectionString = "server=" & _MySqlhostname & ";" &
+                                                "database=" & _MySqlDBName & ";" &
+                                                "uid=" & _MySqlusername & ";" &
+                                                "pwd=" & _MySqlpassword & ";" &
+                                                "port=" & _MySqlport & ";"
+                End If
+
                 'oOdbcConn.ConnectionString = _
                 '"User ID=uid;" & _
                 '"Password=pw;" & _

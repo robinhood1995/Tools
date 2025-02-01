@@ -1,5 +1,8 @@
 # Class Tool Library
 
+![Robinhood1995](Favicon.ico)
+[Robinhood1995](https://www.sflservicellc.com)
+
 These are classes that have multiple functions that I use/used in multi projects.
 
 ## Installation
@@ -47,7 +50,55 @@ Add the reference of the DLL to any project
 	22.	Convert From 16ths to inches
 	23.	Convert inches to 16ths
 	24.	Encrypt and Decrypt String
-	25.	
+	25. Check if data is Numberic Only
+	26.	Check if data is Alpha Only
+	27.	Convert Julian to Date
+	28.	Convert Column Numbers to Letter 
+	29.	Convert Multi-Letters to Numbers
+	30.	Convert Column to Letter
+	31.	Create Directory
+	32.	Email
+	33.	Email using NET mail
+	34.	Check Text in Combo
+	35.	Loop throught rows column to get each data column
+	36.	Get Rows in Data Grid
+	37.	Get a Row in (DGV) data gridview to Datatable
+	38. Get Selected Rows in DGV data gridview to Datatable
+	39.	Display a dataset table and values
+	40.	Count Occurences in a string
+	41.	Get/set text file contents
+	42.	Ping Server
+	43.	Image Resize and Center
+	44.	Check Email Addresses
+	45.	Generate Random Codes String
+	46.	Convert String to Zero
+	47.	Convert String to Decimal
+	48.	Convert Letters to Numbers
+	49.	Unicode to String
+	50.	Convert Numbers to Words
+	51.	Check Sting if it is Currency
+	52.	Smtp Mail (depricated)
+	53.	Convert Image to Bytes
+	54.	Convert bytes back to an Image
+	55.	Split string and keep seprators
+	56.	Cancelled input box cancel
+	57.	Check for Textbox changes on a winform 
+	58.	Convert List to Datatable but very slow
+	59.	Check Remote File Exists
+	60.	Get Mac Address
+	61.	Validate US Date
+	62.	Get Datatable from Objects
+	63.	Set the combobox to the correct item
+	64.	Simple FTP Upload File
+	65.	Simple FTP Downlad File
+15.	clsINI: Read a INI file
+16.	clsJulianDates: Worki/Convert with Julian dates
+17.	clsMailHelper: Sends an email messages
+18.	clsOutput: Output to console class
+19. clsParseSQLtxtParam: This Class will parse the SQL text to replace parameter labels with obj code
+20.	clsProgressBarThreading: This will update progress bar on current form on seprate thread
+21. clsSettings: Replacement Class for VB GetSetting and SaveSetting. Designed to replace the saving of application Settings in the registry with saving in an xml file in the installation directory
+22. clsSqlDataProvider: This class provides a fast and universal method for accessing SQL Server database.This class cannot be inherited
 
 
 ## Contributing
