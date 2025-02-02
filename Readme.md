@@ -5,12 +5,25 @@
 
 These are classes that have multiple functions that I use/used in multi projects.
 
-## Installation
+# v4.8 .NET Framework Required
 
-Add the reference of the DLL to any project
-.NET Framework 4.8
+- v4.8 .NET Framework
 
-## Untilities
+---------------------------------------
+
+See the [changelog](CHANGELOG.md) for changes.
+
+## Information
+
+- Add the reference of the DLL to any project
+
+## Installers
+
+## Versions
+
+- [1.0.1](VERSION)
+
+## Featuring
 
 1. clsAppConfigFileSettings: This class is used to Change the AppConfigs Parameters at runtime through User Interface
 2. clsAutoCombo: Auto Complete Combo on Key Down (depricated)
@@ -101,17 +114,41 @@ Add the reference of the DLL to any project
 22. clsSqlDataProvider: This class provides a fast and universal method for accessing SQL Server database.This class cannot be inherited
 
 
+## Table of contents
+
+ [.NET 8 Core Required](#.NET-8-Core-Required)
+  - [Information](#information)
+  - [Installers](#installers)
+  - [Versions](#versions)
+  - [Featuring](#featuring)
+  - [Table of contents](#table-of-contents)
+    - [Implementing](#implementing)
+    - [Bugs and feature requests](#bugs-and-feature-requests)
+    - [Documentation](#documentation)
+    - [License](#license)
+	- [Contributing](#Contributing)
+	- [Project Status](#Project Status)
+
+### Implementing
+
+### Bugs and feature requests
+
+Have a bug or a feature request? Please first search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://github.com/SFLServicesLLC/KSTool/issues/new).
+
+### Documentation
+
+No more documentation required for now.
+
+### License
+
+Code released under [The MIT License](LICENSE)
+
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+- Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
+- Please make sure to update tests as appropriate.
 
 ## Project Status
 
-This project is still in use today in multiple of my projects
+- This project is still in use today in multiple of my projects
